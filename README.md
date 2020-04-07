@@ -30,6 +30,10 @@ The users are referred to Florinsky (2016) for mathematical concepts of geomorph
 
 # Minimal reproducible example
 
+[OPEN the example directly in Google Earth Engine](https://code.earthengine.google.com/464e49ddb9a207fac8f477c227f176f0).
+
+NOTE: Any Earth Engine user with the link can use it to view and run the example code. However, you need to be registered.
+
 ```javascript
 // Importing module
 
