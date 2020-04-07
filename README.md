@@ -76,8 +76,6 @@ Map.setCenter(0,0,2);
 
 In the Javascript code editor [https://code.earthengine.google.com/](https://code.earthengine.google.com/), it is necessary to import the module **TAGEE-functions**.
 
-Detailed exaplanation:
-
 ```javascript
 var TAGEE = require('users/joselucassafanelli/TAGEE:TAGEE-functions');
 ```
@@ -98,6 +96,14 @@ var waterMask = hansen_2016.updateMask(hansen_2016_wbodies);
 // Loading SRTM 30 m
 
 var demSRTM = ee.Image('USGS/SRTMGL1_003').clip(bbox).rename('DEM');
+
+// Smoothing filter
+var gaussianFilter = ee.Kernel.gaussian({
+  radius: 3, sigma: 2, units: 'pixels', normalize: true
+});
+
+// Smoothing the DEM with the gaussian kernel.
+var demSRTM = demSRTM.convolve(gaussianFilter).resample("bilinear");
 ```
 
 Finally, you can run the TAGEE module for calculating the terrain attributes.
