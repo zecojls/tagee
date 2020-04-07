@@ -30,7 +30,41 @@ The users are referred to Florinsky (2016) for mathematical concepts of geomorph
 
 # Minimal reproducible example
 
+```javascript
+// Importing module
+
+var TAGEE = require('users/joselucassafanelli/TAGEE:TAGEE-functions');
+
+// World bounding box
+
+var bbox = ee.Geometry.Rectangle({coords: [-180, -60, 180, 60], geodesic: false});
+
+// Water mask
+
+var hansen_2016 = ee.Image('UMD/hansen/global_forest_change_2016_v1_4').select('datamask');
+var hansen_2016_wbodies = hansen_2016.neq(1).eq(0);
+var waterMask = hansen_2016.updateMask(hansen_2016_wbodies);
+
+// Loading SRTM 30 m
+
+var demSRTM = ee.Image('USGS/SRTMGL1_003').clip(bbox).rename('DEM');
+
+// Terrain analysis
+
+var DEMAttributes = TAGEE.terrainAnalysis(TAGEE, demSRTM, bbox).updateMask(waterMask);
+print(DEMAttributes.bandNames(), 'Parameters of Terrain');
+
+// Visualization
+
+var vizVC = TAGEE.makeVisualization(DEMAttributes, 'VerticalCurvature', 'level2', bbox, 'rainbow');
+Map.addLayer(vizVC, {}, 'VerticalCurvature');
+Map.setCenter(0,0,2);
+```
+## Example description
+
 In the Javascript code editor [https://code.earthengine.google.com/](https://code.earthengine.google.com/), it is necessary to import the module **TAGEE-functions**.
+
+Detailed exaplanation:
 
 ```javascript
 var TAGEE = require('users/joselucassafanelli/TAGEE:TAGEE-functions');
@@ -81,6 +115,8 @@ List (13 elements){
 TAGEE has an additional feature for making the visualization easier and adapated to a dynamic scale (legend), once the pixel distances for the derivatives calculations are influenced by the visualization level. The legend limits are estimated by the 5th and 95th percentiles existing within the bounding box.
 
 ```javascript
+// Visualization
+
 var vizVC = TAGEE.makeVisualization(DEMAttributes, 'VerticalCurvature', 'level2', bbox, 'rainbow');
 Map.addLayer(vizVC, {}, 'VerticalCurvature');
 Map.setCenter(0,0,2);
