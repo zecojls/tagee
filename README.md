@@ -30,9 +30,9 @@ The users are referred to Florinsky (2016) for mathematical concepts of geomorph
 
 # Minimal reproducible example
 
-[OPEN the example directly in Google Earth Engine](https://code.earthengine.google.com/464e49ddb9a207fac8f477c227f176f0).
+[OPEN THE EXAMPLE DIRECTLY IN THE GEE CODE EDITOR](https://code.earthengine.google.com/2b1d977d8cb1c96dbf7c6a4d1064ea37).
 
-NOTE: Any Earth Engine user with the link can use it to view and run the example code. However, you need to be registered.
+NOTE: Any Earth Engine user with the above link can use it to view and run the example code. However, you need to be logged.
 
 ```javascript
 // Importing module
@@ -52,6 +52,14 @@ var waterMask = hansen_2016.updateMask(hansen_2016_wbodies);
 // Loading SRTM 30 m
 
 var demSRTM = ee.Image('USGS/SRTMGL1_003').clip(bbox).rename('DEM');
+
+// Smoothing filter
+var gaussianFilter = ee.Kernel.gaussian({
+  radius: 3, sigma: 2, units: 'pixels', normalize: true
+});
+
+// Smoothing the DEM with the gaussian kernel.
+var demSRTM = demSRTM.convolve(gaussianFilter).resample("bilinear");
 
 // Terrain analysis
 
