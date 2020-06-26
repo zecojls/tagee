@@ -24,9 +24,13 @@ Available terrain attributes:
 | Gaussian curvature   | meter         | Product of maximal and minimal curvatures               |
 | Shape Index          | dimensionless | Continuous form of the Gaussian landform classification |
 
-The users are referred to Florinsky (2016) for mathematical concepts of geomorphometry, a historical overview of the progress of digital terrain modelling, and the notion of the topographic surface and its limitations. A manuscript describing the calculation methods of TAGEE is planned.
+The users are referred to Florinsky (2016) for mathematical concepts of geomorphometry, a historical overview of the progress of digital terrain modelling, and the notion of the topographic surface and its limitations.
 
 > Florinsky, Igor. Digital terrain analysis in soil science and geology. Academic Press, 2016.
+
+Please, cite the following paper when using TAGEE:
+
+> Safanelli, J.L.; Poppiel, R.R.; Ruiz, L.F.C.; Bonfatti, B.R.; Mello, F.A.O.; Rizzo, R.; Demattê, J.A.M. Terrain Analysis in Google Earth Engine: A Method Adapted for High-Performance Global-Scale Analysis. ISPRS Int. J. Geo-Inf. 2020, 9, 400. DOI: [https://doi.org/10.3390/ijgi9060400](https://doi.org/10.3390/ijgi9060400)
 
 # Minimal reproducible example
 
