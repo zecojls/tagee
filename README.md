@@ -4,7 +4,7 @@ Google Earth Engine (GEE) is a high-performance cloud-based platform for process
 
 There is a myriad of processing toolboxes in GEE, but this repository/package aims to contribute to the GEE community for making terrain analysis seamlessly. 
 
-Terrain Analysis in Google Earth Engine (TAGEE) is a repository that contains the GEE Javascript code and a minimal reproducible example of TAGEE for the online code editor.
+Terrain Analysis in Google Earth Engine (TAGEE) is a repository that contains the GEE Javascript code and a minimal reproducible example for the online code editor.
 
 Available terrain attributes:
 
