@@ -34,7 +34,7 @@ Please, cite the following paper when using TAGEE:
 
 # Important note!
 
-As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window to calculate partial derivatives and hence terrain attributes, the visualization of the outputs is affected by the scale, which require the adjustment of the histogram for proper visualization. This happens because GEE produces different pyramids from your data (from the local up to the global scale) and consequently the pixel size changes dynamically, affecting the range of the estimated attributes values within your study area. Until you specify your final resolution, say 30m/pixel, the pyramids will dynamically affect the visualization of an output for different visualizaiton scales. You can determine your final resolution by exporting the results to assets and them importing again for futher processing and map composition.
+As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window to calculate partial derivatives and hence terrain attributes, the visualization of the outputs is affected by the scale, which require the adjustment of the histogram for proper visualization. This happens because GEE produces different pyramids from your data (from the local up to the global scale) and consequently the pixel size changes dynamically, affecting the range of the estimated attribute values. Until you specify your final resolution, say 30m/pixel, the pyramids will dynamically affect the visualization of an output for different visualizaiton scales. You can determine your final resolution by exporting the results to assets and importing back for further processing or map composition.
 
 # Minimal reproducible example
 
