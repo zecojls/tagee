@@ -38,10 +38,13 @@ As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window
 
 # Minimal reproducible example
 
-[OPEN THE EXAMPLE DIRECTLY IN THE GEE CODE EDITOR](https://code.earthengine.google.com/2b1d977d8cb1c96dbf7c6a4d1064ea37).
+- Check a demo on Google Colab: [tagee_google_colab.ipynb](https://github.com/zecojls/tagee/blob/9f0e0a512ff4b69cd52fdc62ce7b8a8eb412d208/tagee_google_colab.ipynb).
 
-NOTE: Any Earth Engine user with the above link can use it to view and run the example code. However, you need to login.
+- Open the example directly in the [online code editor](https://code.earthengine.google.com/2b1d977d8cb1c96dbf7c6a4d1064ea37).
 
+NOTE: Any Earth Engine user with the above links can use it to view and run the example code. However, you need to login.
+
+## Example code
 ```javascript
 // Importing module
 
