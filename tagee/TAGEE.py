@@ -1,6 +1,5 @@
 import ee
 import math
-ee.Initialize()
 
 # Functions for calculating parameters
 
@@ -494,7 +493,24 @@ def calculateAttributes(derivatives, bbox):
                                   'GaussianCurvature', 'MinimalCurvature', 'MaximalCurvature', 'ShapeIndex'))
 
 
-def terrainAnalysis(dem, bbox):
+def terrainAnalysis(dem: ee.Image, bbox: ee.Geometry) -> ee.Image:
+  """
+  Calculate all terrain attributes for a given DEM and region.
+
+    Parameters:
+      dem (ee.Image): 
+        An image representing elevation values.
+      bbox (ee.Geometry): 
+        A geometry over which terrain attributes 
+        will be calculated.
+
+    Returns:
+      attributes (ee.Image): 
+        An image with calculated terrain attributes
+        with the following bands: Elevation, Slope, Aspect, Hillshade,
+        Northness, Eastness, HorizontalCurvature, VerticalCurvature,
+        MeanCurvature, GaussianCurvature, MinimalCurvature, MaximalCurvature
+  """
   parameters = calculateParameters(dem, bbox)
   derivatives = calculateDerivatives(parameters, bbox)
   attributes = calculateAttributes(derivatives, bbox)
@@ -502,7 +518,34 @@ def terrainAnalysis(dem, bbox):
 
 # Additional features
 
-def makeVisualization(result, bandName, zoomLevel, bbox, palette):
+def makeVisualization(result: ee.Image, bandName: str, 
+                      zoomLevel: str, bbox: ee.Geometry, palette: str) -> ee.Image:
+  """
+  Generate a visualization for a given band at a particular zoom level.
+  This function will dynamically determine the appropriate color scale
+  to display the image from a choice of palettes.
+
+  Parameters:
+    result (ee.Image): 
+      Image to be visualized.
+    bandName (str): 
+      Band within result to be visualized.
+    zoomLevel (str): 
+      Desired zoom level. Must be of form "levelX",
+      where X is from 0-15, inclusive.
+    bbox (ee.Geometry):
+      Geometry for which the color scale should be calculated. The 5th and 95th
+      percentile of result[bandName] are calculated in this region.
+    palette (str):
+      Palette to use for the visualization. Must be on of: "rainbow", "inferno",
+      "cubehelix", "red2green", "green2red", "elevation", "aspect".
+
+  Returns:
+    visualization (ee.Image):
+      An image with red, green, and blue bands set according to the
+      visualization.
+
+  """
   
   levelsDic = ee.Dictionary({
         'level0': {'zoom': 0, 'scale': 157000},
@@ -551,8 +594,20 @@ def makeVisualization(result, bandName, zoomLevel, bbox, palette):
   
   return visualization
 
-def logTransformation(result, bandName):
+def logTransformation(result: ee.Image, bandName: str) -> ee.Image:
+  """
+  Apply a log10 transformation to an image.
+
+  Parameters:
+    result (ee.Image):
+      Image to be transformed.
+    bandName (str):
+      Band in image to be transformed.
   
+  Returns:
+    logValue (ee.Image):
+      Log-transformed image.
+  """
   selection = result.select(bandName).rename('selection')
   sign = selection.expression("(b('selection') > 0) ? 1" + ": (b('selection') == 0) ? 0" + ": -1").rename("sign")
   constant1 = ee.Image(ee.Number(1))
