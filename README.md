@@ -212,4 +212,3 @@ print(reduction.getInfo())
 ```
 
 For any request, comment and suggestion, please send me a email (*my github nickname* at gmail.com)
-
