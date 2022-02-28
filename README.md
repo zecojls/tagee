@@ -4,7 +4,7 @@ Google Earth Engine (GEE) is a high-performance cloud-based platform for process
 
 There is a myriad of processing toolboxes in GEE, but this repository/package aims to contribute to the GEE community for making terrain analysis seamlessly. 
 
-Terrain Analysis in Google Earth Engine (TAGEE) is a repository that contains the GEE Javascript code and a minimal reproducible example for the online code editor.
+Terrain Analysis in Google Earth Engine (TAGEE) is a repository that contains the GEE Javascript code and a Python API implementation with reproducible examples for both.
 
 Available terrain attributes:
 
@@ -34,7 +34,8 @@ Please, cite the following paper when using TAGEE:
 
 # Important note!
 
-As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window to calculate partial derivatives and hence terrain attributes, the visualization of the outputs is affected by the scale, which require the adjustment of the histogram for proper visualization. This happens because GEE produces different pyramids from your data (from the local up to the global scale) and consequently the pixel size changes dynamically, affecting the range of the estimated attribute values. Until you specify your final resolution, say 30m/pixel, the pyramids will dynamically affect the visualization of an output for different visualizaiton scales. You can determine your final resolution by exporting the results to assets and importing back for further processing or map composition.
+As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window to calculate partial derivatives and hence terrain attributes, the visualization of the outputs is affected by the scale, which require the adjustment of the histogram for proper visualization. This happens because GEE produces different pyramids from your data (from the local up to the global scale) and consequently the pixel size changes dynamically, affecting the range of the estimated attribute values. Until you specify your final resolution, say 30m/pixel, the pyramids will dynamically affect the visualization of an output for different visualizaiton scales. You can determine your final resolution by exporting the results to assets and importing back further processing or map composition.
+
 
 # Minimal reproducible example
 
@@ -42,6 +43,7 @@ As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window
 
 NOTE: Any Earth Engine user with the above link can use it to view and run the example code. However, you need to login.
 
+## Javascript
 ```javascript
 // Importing module
 
@@ -178,6 +180,36 @@ The visualization levels are:
 
 Available color palettes: 'rainbow', 'inferno', 'cubehelix', 'red2green', 'green2red', 'elevation', 'aspect' and 'hillshade'.
 
+## Python API
+The Python TAGEE package is implemented very similarly to the JS version.
+
+```python
+# import & initialize the earth engine API
+import ee
+ee.Initialize()
+
+# import relevant function
+from tagee import terrainAnalysis
+
+# set up a smoothed DEM
+gaussianFilter = ee.Kernel.gaussian(
+  radius=3, sigma=2, units='pixels', normalize=True
+)
+srtmSmooth = ee.Image("USGS/SRTMGL1_003").convolve(gaussianFilter).resample("bilinear")
+
+# Calculate terrain metrics over a given geometry. You must provide a geometry
+# in the terrainAnalysis call.
+geom = ee.FeatureCollection(ee.Geometry.Rectangle(-111, 40, -110.9, 40.1))
+terrainMetrics = terrainAnalysis(srtmSmooth, geom.geometry())
+
+# Summarize the metrics in the geometry
+reduction = terrainMetrics.reduceRegions(
+  geom,
+  ee.Reducer.median()
+)
+
+print(reduction.getInfo())
+```
 
 For any request, comment and suggestion, please send me a email (*my github nickname* at gmail.com)
 
