@@ -1,11 +1,24 @@
-# Overview
+[![PyPI version](https://badge.fury.io/py/tagee.svg)](https://badge.fury.io/py/tagee)
 
 Google Earth Engine (GEE) is a high-performance cloud-based platform for processing geospatial data.
 
 There is a myriad of processing toolboxes in GEE, but this repository/package aims to contribute to the GEE community for making terrain analysis seamlessly. 
 
+# Installation
 Terrain Analysis in Google Earth Engine (TAGEE) is a repository that contains the GEE Javascript code and a Python API implementation with reproducible examples for both.
 
+You can use TAGEE in the Earth Engine code editor with a `require` statement.
+```javascript
+var TAGEE = require('users/joselucassafanelli/TAGEE:TAGEE-functions');
+```
+Or install the Python package from pip:
+```
+pip install tagee
+```
+
+Additional examples information are below.
+
+# Feature Overview
 Available terrain attributes:
 
 | Attribute            | Unit          | Description                                             |
@@ -32,7 +45,7 @@ Please, cite the following paper when using TAGEE:
 
 > Safanelli, J.L.; Poppiel, R.R.; Ruiz, L.F.C.; Bonfatti, B.R.; Mello, F.A.O.; Rizzo, R.; Demattê, J.A.M. Terrain Analysis in Google Earth Engine: A Method Adapted for High-Performance Global-Scale Analysis. ISPRS Int. J. Geo-Inf. 2020, 9, 400. DOI: [https://doi.org/10.3390/ijgi9060400](https://doi.org/10.3390/ijgi9060400)
 
-# Important note!
+## Important note!
 
 As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window to calculate partial derivatives and hence terrain attributes, the visualization of the outputs is affected by the scale, which require the adjustment of the histogram for proper visualization. This happens because GEE produces different pyramids from your data (from the local up to the global scale) and consequently the pixel size changes dynamically, affecting the range of the estimated attribute values. Until you specify your final resolution, say 30m/pixel, the pyramids will dynamically affect the visualization of an output for different visualizaiton scales. You can determine your final resolution by exporting the results to assets and importing back further processing or map composition.
 
