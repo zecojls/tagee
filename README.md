@@ -136,7 +136,9 @@ Finally, you can run the TAGEE module for calculating the terrain attributes.
 
 var DEMAttributes = TAGEE.terrainAnalysis(TAGEE, demSRTM, bbox).updateMask(waterMask);
 print(DEMAttributes.bandNames(), 'Parameters of Terrain');
-
+```
+Console output (don't copy):
+```
 List (13 elements){
 0: Elevation
 1: Slope
