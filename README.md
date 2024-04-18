@@ -9,7 +9,7 @@ Terrain Analysis in Google Earth Engine (TAGEE) is a repository that contains th
 
 You can use TAGEE in the Earth Engine code editor with a `require` statement.
 ```javascript
-var TAGEE = require('users/joselucassafanelli/TAGEE:TAGEE-functions');
+var TAGEE = require('users/zecojls/TAGEE:TAGEE-functions');
 ```
 Or install the Python package from pip:
 ```
@@ -60,7 +60,7 @@ NOTE: Any Earth Engine user with the above link can use it to view and run the e
 ```javascript
 // Importing module
 
-var TAGEE = require('users/joselucassafanelli/TAGEE:TAGEE-functions');
+var TAGEE = require('users/zecojls/TAGEE:TAGEE-functions');
 
 // World bounding box
 
@@ -100,7 +100,7 @@ Map.setCenter(0,0,2);
 In the Javascript code editor [https://code.earthengine.google.com/](https://code.earthengine.google.com/), it is necessary to import the module **TAGEE-functions**.
 
 ```javascript
-var TAGEE = require('users/joselucassafanelli/TAGEE:TAGEE-functions');
+var TAGEE = require('users/zecojls/TAGEE:TAGEE-functions');
 ```
 
 Then, you need to define the bounding box (study region limits) and import the Digital Elevation Model for terrain analysis (e.g. SRTM 30 m).
