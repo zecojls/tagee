@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="tagee",
-    version="0.1.0",
+    version="0.1.1",
     description="A suite of terrain analysis tools for Google Earth Engine.",
     long_description=README,
     long_description_content_type="text/markdown",
