@@ -3,7 +3,7 @@ import math
 
 # Functions for calculating parameters
 
-def calculateParameters(dem, bbox):
+def calculateParameters(dem):
 
   # Defining kernels to retrieve 3x3 window elevations
 
@@ -81,13 +81,13 @@ def calculateParameters(dem, bbox):
     p2 = phi1.cos().multiply(phi2.cos()) # cos(phi1) * cos(phi2)
     p3 = deltalambda.divide(2).sin().multiply(deltalambda.divide(2).sin()) # sin(deltalambda/2) * sin(deltalambda/2)
     j = p2.multiply(p3).add(p1) # j = p1 + p2 * p3
-    p4 = ee.Image(ee.Number(1)).clip(bbox) # p4 = image with constant 1
-    p5 = ee.Image(ee.Number(2)).clip(bbox) # p5 = image with constant 2
+    p4 = ee.Image(ee.Number(1)) # p4 = image with constant 1
+    p5 = ee.Image(ee.Number(2)) # p5 = image with constant 2
     p6 = p4.subtract(j).sqrt() # sqrt(1-j)
     p7 = j.sqrt() # sqrt(a)
     p8 = p6.atan2(p7) # atan2(p6,p7)
     k = p5.multiply(p8) # k = 2 * p8
-    R = ee.Image(ee.Number(6371000)).clip(bbox) # approximate radius of Earth
+    R = ee.Image(ee.Number(6371000)) # approximate radius of Earth
     l = R.multiply(k) # l = R * k which is the distance between two points
     
     return l
@@ -109,7 +109,7 @@ def calculateParameters(dem, bbox):
 
 # Functions for calculating terrain derivatives  //
 
-def calculateDerivatives(parameters, bbox):
+def calculateDerivatives(parameters):
 
   # Functions for Derivatives and Terrain Attributes
 
@@ -125,7 +125,7 @@ def calculateDerivatives(parameters, bbox):
     Z6 = parameters.select('Z6')
     Z7 = parameters.select('Z7')
     Z9 = parameters.select('Z9')
-    constant2 = ee.Image(ee.Number(2)).clip(bbox)
+    constant2 = ee.Image(ee.Number(2))
     
     p1 = a.pow(2).multiply(c).multiply(d).multiply(d.add(e)).multiply(Z3.subtract(Z1))
     p2 = b.multiply(a.pow(2).multiply(d.pow(2)).add(c.pow(2).multiply(e.pow(2)))).multiply(Z6.subtract(Z4))
@@ -157,9 +157,9 @@ def calculateDerivatives(parameters, bbox):
     Z7 = parameters.select('Z7')
     Z8 = parameters.select('Z8')
     Z9 = parameters.select('Z9')
-    constant1 = ee.Image(ee.Number(1)).clip(bbox)
-    constant2 = ee.Image(ee.Number(2)).clip(bbox)
-    constant3 = ee.Image(ee.Number(3)).clip(bbox)
+    constant1 = ee.Image(ee.Number(1))
+    constant2 = ee.Image(ee.Number(2))
+    constant3 = ee.Image(ee.Number(3))
     
     p1 = constant1.divide(constant2.multiply(d).multiply(e).multiply(d.add(e)).multiply(a.pow(4).add(b.pow(4)).add(c.pow(4))))
     
@@ -198,7 +198,7 @@ def calculateDerivatives(parameters, bbox):
     Z7 = parameters.select('Z7')
     Z8 = parameters.select('Z8')
     Z9 = parameters.select('Z9')
-    constant2 = ee.Image(ee.Number(2)).clip(bbox)
+    constant2 = ee.Image(ee.Number(2))
     
     p1 = c.pow(2).multiply(Z1.add(Z3).subtract(constant2.multiply(Z2)))
     p2 = b.pow(2).multiply(Z4.add(Z6).subtract(constant2.multiply(Z5)))
@@ -224,7 +224,7 @@ def calculateDerivatives(parameters, bbox):
     Z7 = parameters.select('Z7')
     Z8 = parameters.select('Z8')
     Z9 = parameters.select('Z9')
-    constant2 = ee.Image(ee.Number(2)).clip(bbox)
+    constant2 = ee.Image(ee.Number(2))
     
     p1 = c.multiply(a.pow(2).multiply(d.add(e)).add(b.pow(2).multiply(e))).multiply(Z3.subtract(Z1))
     p2 = b.multiply(a.pow(2).multiply(d).subtract(c.pow(2).multiply(e))).multiply(Z4.subtract(Z6))
@@ -255,9 +255,9 @@ def calculateDerivatives(parameters, bbox):
     Z7 = parameters.select('Z7')
     Z8 = parameters.select('Z8')
     Z9 = parameters.select('Z9')
-    constant1 = ee.Image(ee.Number(1)).clip(bbox)
-    constant2 = ee.Image(ee.Number(2)).clip(bbox)
-    constant3 = ee.Image(ee.Number(3)).clip(bbox)
+    constant1 = ee.Image(ee.Number(1))
+    constant2 = ee.Image(ee.Number(2))
+    constant3 = ee.Image(ee.Number(3))
     
     p1 = constant2.divide(constant3.multiply(d).multiply(e).multiply(d.add(e)).multiply(a.pow(4).add(b.pow(4)).add(c.pow(4))))
     
@@ -284,12 +284,12 @@ def calculateDerivatives(parameters, bbox):
     return t
 
   def signPFunction(pDerivative):
-    signP = pDerivative.expression("(b('PDerivative') > 0) ? 1" + ": (b('PDerivative') == 0) ? 0" + ": -1").clip(bbox).rename("signP")
+    signP = pDerivative.expression("(b('PDerivative') > 0) ? 1" + ": (b('PDerivative') == 0) ? 0" + ": -1").rename("signP")
     
     return signP
 
   def signQFunction(qDerivative):
-    signQ = qDerivative.expression("(b('QDerivative') > 0) ? 1" + ": (b('QDerivative') == 0) ? 0" + ": -1").clip(bbox).rename("signQ")
+    signQ = qDerivative.expression("(b('QDerivative') > 0) ? 1" + ": (b('QDerivative') == 0) ? 0" + ": -1").rename("signQ")
     
     return signQ
 
@@ -315,7 +315,7 @@ def calculateDerivatives(parameters, bbox):
 
 # Functions for calculating terrain attributes
 
-def calculateAttributes(derivatives, bbox):
+def calculateAttributes(derivatives):
 
   def slopeFunction(derivatives):
     p = derivatives.select('PDerivative')
@@ -335,10 +335,10 @@ def calculateAttributes(derivatives, bbox):
     q = derivatives.select('QDerivative')
     signP = derivatives.select('signP')
     signQ = derivatives.select('signQ')
-    constant1 = ee.Image(ee.Number(1)).clip(bbox)
-    constantNeg1 = ee.Image(ee.Number(-1)).clip(bbox)
-    constant90 = ee.Image(ee.Number(90)).clip(bbox)
-    constant180 = ee.Image(ee.Number(180)).clip(bbox)
+    constant1 = ee.Image(ee.Number(1))
+    constantNeg1 = ee.Image(ee.Number(-1))
+    constant90 = ee.Image(ee.Number(90))
+    constant180 = ee.Image(ee.Number(180))
     
     p1 = constantNeg1.multiply(constant90).multiply(constant1.subtract(signQ)).multiply(constant1.subtract(signP.abs()))
     p2 = constant180.multiply(constant1.add(signP))
@@ -351,9 +351,9 @@ def calculateAttributes(derivatives, bbox):
   def hillshadeFunction(aspect):
     p = derivatives.select('PDerivative')
     q = derivatives.select('QDerivative')
-    theta = ee.Image(ee.Number(45)).clip(bbox) # Azimuth
-    psi = ee.Image(ee.Number(315)).clip(bbox) # Elevation angle
-    constant1 = ee.Image(ee.Number(1)).clip(bbox)
+    theta = ee.Image(ee.Number(45)) # Azimuth
+    psi = ee.Image(ee.Number(315)) # Elevation angle
+    constant1 = ee.Image(ee.Number(1))
     
     p1 = constant1.subtract(p.multiply(theta.sin()).multiply(constant1.divide(psi))).subtract(q.multiply(theta.cos()).multiply(constant1.divide(psi)))
     p2 = constant1.add(p.pow(2)).add(q.pow(2)).sqrt().multiply(constant1.add(theta.sin().multiply(constant1.divide(psi)).pow(2)).add(theta.cos().multiply(constant1.divide(psi)).pow(2)).sqrt())
@@ -382,9 +382,9 @@ def calculateAttributes(derivatives, bbox):
     r = derivatives.select('RDerivative')
     s = derivatives.select('SDerivative')
     t = derivatives.select('TDerivative')
-    constantNeg1 = ee.Image(ee.Number(-1)).clip(bbox)
-    constant1 = ee.Image(ee.Number(1)).clip(bbox)
-    constant2 = ee.Image(ee.Number(2)).clip(bbox)
+    constantNeg1 = ee.Image(ee.Number(-1))
+    constant1 = ee.Image(ee.Number(1))
+    constant2 = ee.Image(ee.Number(2))
     
     p1 = q.pow(2).multiply(r).subtract(constant2.multiply(p).multiply(q).multiply(s)).add(p.pow(2).multiply(t))
     p2 = p.pow(2).add(q.pow(2)).multiply(constant1.add(p.pow(2)).add(q.pow(2)).sqrt())
@@ -398,9 +398,9 @@ def calculateAttributes(derivatives, bbox):
     r = derivatives.select('RDerivative')
     s = derivatives.select('SDerivative')
     t = derivatives.select('TDerivative')
-    constantNeg1 = ee.Image(ee.Number(-1)).clip(bbox)
-    constant1 = ee.Image(ee.Number(1)).clip(bbox)
-    constant2 = ee.Image(ee.Number(2)).clip(bbox)
+    constantNeg1 = ee.Image(ee.Number(-1))
+    constant1 = ee.Image(ee.Number(1))
+    constant2 = ee.Image(ee.Number(2))
 
     p2 = p.pow(2).multiply(r).add(constant2.multiply(p).multiply(q).multiply(s)).add(q.pow(2).multiply(t))
     p3 = p.pow(2).add(q.pow(2)).multiply(constant1.add(p.pow(2)).add(q.pow(2)).pow(3).sqrt())
@@ -414,9 +414,9 @@ def calculateAttributes(derivatives, bbox):
     r = derivatives.select('RDerivative')
     s = derivatives.select('SDerivative')
     t = derivatives.select('TDerivative')
-    constantNeg1 = ee.Image(ee.Number(-1)).clip(bbox)
-    constant1 = ee.Image(ee.Number(1)).clip(bbox)
-    constant2 = ee.Image(ee.Number(2)).clip(bbox)
+    constantNeg1 = ee.Image(ee.Number(-1))
+    constant1 = ee.Image(ee.Number(1))
+    constant2 = ee.Image(ee.Number(2))
 
     p2 = constant1.add(q.pow(2)).multiply(r).subtract(constant2.multiply(p).multiply(q).multiply(s)).add(constant1.add(p.pow(2)).multiply(t))
     p3 = constant2.multiply(constant1.add(p.pow(2)).add(q.pow(2)).pow(3).sqrt())
@@ -430,7 +430,7 @@ def calculateAttributes(derivatives, bbox):
     r = derivatives.select('RDerivative')
     s = derivatives.select('SDerivative')
     t = derivatives.select('TDerivative')
-    constant1 = ee.Image(ee.Number(1)).clip(bbox)
+    constant1 = ee.Image(ee.Number(1))
     
     p1 = r.multiply(t).subtract(s.pow(2))
     p2 = constant1.add(p.pow(2)).add(p.pow(2)).pow(2)
@@ -493,14 +493,14 @@ def calculateAttributes(derivatives, bbox):
                                   'GaussianCurvature', 'MinimalCurvature', 'MaximalCurvature', 'ShapeIndex'))
 
 
-def terrainAnalysis(dem: ee.Image, bbox: ee.Geometry) -> ee.Image:
+def terrainAnalysis(dem: ee.Image, bbox: ee.Geometry | None = None) -> ee.Image:
   """
   Calculate all terrain attributes for a given DEM and region.
 
     Parameters:
       dem (ee.Image): 
         An image representing elevation values.
-      bbox (ee.Geometry): 
+      bbox (ee.Geometry | None):
         A geometry over which terrain attributes 
         will be calculated.
 
@@ -511,9 +511,11 @@ def terrainAnalysis(dem: ee.Image, bbox: ee.Geometry) -> ee.Image:
         Northness, Eastness, HorizontalCurvature, VerticalCurvature,
         MeanCurvature, GaussianCurvature, MinimalCurvature, MaximalCurvature
   """
-  parameters = calculateParameters(dem, bbox)
-  derivatives = calculateDerivatives(parameters, bbox)
-  attributes = calculateAttributes(derivatives, bbox)
+  parameters = calculateParameters(dem)
+  derivatives = calculateDerivatives(parameters)
+  attributes = calculateAttributes(derivatives)
+  if bbox is not None:
+    return attributes.clip(bbox)
   return(attributes)
 
 # Additional features
