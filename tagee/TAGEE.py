@@ -74,7 +74,7 @@ def calculateParameters(dem):
     phi2 = demLat.select(ee.String(latNeigh2)).divide(180).multiply(math.pi) # to Radians
     lambda1 = demLong.select(ee.String(longNeigh1)).divide(180).multiply(math.pi) # to Radians
     lambda2 = demLong.select(ee.String(longNeigh2)).divide(180).multiply(math.pi) # to Radians
-
+    
     deltaphi = phi2.subtract(phi1) # (phi2 - phi1)
     deltalambda = lambda2.subtract(lambda1) # (lambda2 - lambda1)
     p1 = deltaphi.divide(2).sin().multiply(deltaphi.divide(2).sin()) # sin(deltaphi/2) * sin(deltaphi/2)
@@ -89,7 +89,7 @@ def calculateParameters(dem):
     k = p5.multiply(p8) # k = 2 * p8
     R = ee.Image(ee.Number(6371000)) # approximate radius of Earth
     l = R.multiply(k) # l = R * k which is the distance between two points
-
+    
     return l
 
   # Distance values
@@ -126,21 +126,21 @@ def calculateDerivatives(parameters):
     Z7 = parameters.select('Z7')
     Z9 = parameters.select('Z9')
     constant2 = ee.Image(ee.Number(2))
-
+    
     p1 = a.pow(2).multiply(c).multiply(d).multiply(d.add(e)).multiply(Z3.subtract(Z1))
     p2 = b.multiply(a.pow(2).multiply(d.pow(2)).add(c.pow(2).multiply(e.pow(2)))).multiply(Z6.subtract(Z4))
     p3 = a.multiply(c.pow(2)).multiply(e.multiply(d.add(e))).multiply(Z9.subtract(Z7))
     p4 = p1.add(p2).add(p3)
-
+    
     p5 = constant2
     p6 = a.pow(2).multiply(c.pow(2).multiply(d.add(e).pow(2)))
     p7 = b.pow(2).multiply(a.pow(2).multiply(d.pow(2)).add(c.pow(2).multiply(e.pow(2))))
     p8 = p6.add(p7).multiply(p5)
-
+    
     p = p4.divide(p8).rename('PDerivative')
-
+    
     return p
-
+  
 
   def addQDerivative(parameters):
     a = parameters.select('a')
@@ -160,29 +160,29 @@ def calculateDerivatives(parameters):
     constant1 = ee.Image(ee.Number(1))
     constant2 = ee.Image(ee.Number(2))
     constant3 = ee.Image(ee.Number(3))
-
+    
     p1 = constant1.divide(constant2.multiply(d).multiply(e).multiply(d.add(e)).multiply(a.pow(4).add(b.pow(4)).add(c.pow(4))))
-
+    
     p2 = d.pow(2).multiply(a.pow(4).add(b.pow(4)).add(b.pow(2).multiply(c.pow(2))))
     p3 = c.pow(2).multiply(e.pow(2)).multiply(a.pow(2).subtract(b.pow(2)))
     p4 = p2.add(p3).multiply(Z1.add(Z3))
-
+    
     p5 = d.pow(2).multiply(a.pow(4).add(c.pow(4)).add(b.pow(2).multiply(c.pow(2))))
     p6 = e.pow(2).multiply(a.pow(4).add(c.pow(4)).add(a.pow(2).multiply(b.pow(2))))
     p7 = p5.subtract(p6).multiply(Z4.add(Z6))
-
+    
     p9 = e.pow(2).multiply(b.pow(4).add(c.pow(4)).add(a.pow(2).multiply(b.pow(2))))
     p10 = a.pow(2).multiply(d.pow(2)).multiply(b.pow(2).subtract(c.pow(2)))
     p11 = p9.subtract(p10).multiply(Z7.add(Z9))
-
+    
     p13 = d.pow(2).multiply(b.pow(4).multiply(Z2.subtract(constant3.multiply(Z5))).add(c.pow(4).multiply(constant3.multiply(Z2).subtract(Z5))).add(a.pow(4).subtract(constant2.multiply(b.pow(2)).multiply(c.pow(2))).multiply(Z2.subtract(Z5))))
-
+    
     p14 = e.pow(2).multiply(a.pow(4).multiply(Z5.subtract(constant3.multiply(Z8))).add(b.pow(4).multiply(constant3.multiply(Z5).subtract(Z8))).add(c.pow(4).subtract(constant2.multiply(a.pow(2)).multiply(b.pow(2))).multiply(Z5.subtract(Z8))))
-
+    
     p15 = constant2.multiply(a.pow(2).multiply(d.pow(2)).multiply(b.pow(2).subtract(c.pow(2))).multiply(Z8).add(c.pow(2).multiply(e.pow(2)).multiply(a.pow(2).subtract(b.pow(2))).multiply(Z2)))
-
+    
     q = p1.multiply(p4.subtract(p7).subtract(p11).add(p13).add(p14).subtract(p15)).rename('QDerivative')
-
+    
     return q
 
   def addRDerivative(parameters):
@@ -199,14 +199,14 @@ def calculateDerivatives(parameters):
     Z8 = parameters.select('Z8')
     Z9 = parameters.select('Z9')
     constant2 = ee.Image(ee.Number(2))
-
+    
     p1 = c.pow(2).multiply(Z1.add(Z3).subtract(constant2.multiply(Z2)))
     p2 = b.pow(2).multiply(Z4.add(Z6).subtract(constant2.multiply(Z5)))
     p3 = a.pow(2).multiply(Z7.add(Z9).subtract(constant2.multiply(Z8)))
     p4 = a.pow(4).add(b.pow(4)).add(c.pow(4))
-
+    
     r = p1.add(p2).add(p3).divide(p4).rename('RDerivative')
-
+    
     return r
 
   def addSDerivative(parameters):
@@ -225,19 +225,19 @@ def calculateDerivatives(parameters):
     Z8 = parameters.select('Z8')
     Z9 = parameters.select('Z9')
     constant2 = ee.Image(ee.Number(2))
-
+    
     p1 = c.multiply(a.pow(2).multiply(d.add(e)).add(b.pow(2).multiply(e))).multiply(Z3.subtract(Z1))
     p2 = b.multiply(a.pow(2).multiply(d).subtract(c.pow(2).multiply(e))).multiply(Z4.subtract(Z6))
     p3 = a.multiply(c.pow(2).multiply(d.add(e)).add(b.pow(2).multiply(d))).multiply(Z7.subtract(Z9))
     p4 = p1.subtract(p2).add(p3)
-
+    
     p5 = constant2
     p6 = a.pow(2).multiply(c.pow(2).multiply(d.add(e).pow(2)))
     p7 = b.pow(2).multiply(a.pow(2).multiply(d.pow(2)).add(c.pow(2).multiply(e.pow(2))))
     p8 = p6.add(p7).multiply(p5)
-
+    
     s = p4.divide(p8).rename('SDerivative')
-
+    
     return s
 
   def addTDerivative(parameters):
@@ -258,39 +258,39 @@ def calculateDerivatives(parameters):
     constant1 = ee.Image(ee.Number(1))
     constant2 = ee.Image(ee.Number(2))
     constant3 = ee.Image(ee.Number(3))
-
+    
     p1 = constant2.divide(constant3.multiply(d).multiply(e).multiply(d.add(e)).multiply(a.pow(4).add(b.pow(4)).add(c.pow(4))))
-
+    
     p2 = d.multiply(a.pow(4).add(b.pow(4)).add(b.pow(2).multiply(c.pow(2))))
     p3 = c.pow(2).multiply(e).multiply(a.pow(2).subtract(b.pow(2)))
     p4 = p2.subtract(p3).multiply(Z1.add(Z3))
-
+    
     p5 = d.multiply(a.pow(4).add(c.pow(4)).add(b.pow(2).multiply(c.pow(2))))
     p6 = e.multiply(a.pow(4).add(c.pow(4)).add(a.pow(2).multiply(b.pow(2))))
     p7 = p5.add(p6).multiply(Z4.add(Z6))
-
+    
     p9 = e.multiply(b.pow(4).add(c.pow(4)).add(a.pow(2).multiply(b.pow(2))))
     p10 = a.pow(2).multiply(d).multiply(b.pow(2).subtract(c.pow(2)))
     p11 = p9.add(p10).multiply(Z7.add(Z9))
-
+    
     p13 = d.multiply(b.pow(4).multiply(Z2.subtract(constant3.multiply(Z5))).add(c.pow(4).multiply(constant3.multiply(Z2).subtract(Z5))).add(a.pow(4).subtract(constant2.multiply(b.pow(2)).multiply(c.pow(2))).multiply(Z2.subtract(Z5))))
-
+    
     p14 = e.multiply(a.pow(4).multiply(constant3.multiply(Z8).subtract(Z5)).add(b.pow(4).multiply(Z8.subtract(constant3.multiply(Z5)))).add(c.pow(4).subtract(constant2.multiply(a.pow(2)).multiply(b.pow(2))).multiply(Z8.subtract(Z5))))
-
+    
     p15 = constant2.multiply(a.pow(2).multiply(d).multiply(b.pow(2).subtract(c.pow(2))).multiply(Z8).subtract(c.pow(2).multiply(e).multiply(a.pow(2).subtract(b.pow(2))).multiply(Z2)))
-
+    
     t = p1.multiply(p4.subtract(p7).add(p11).add(p13).add(p14).subtract(p15)).rename('TDerivative')
-
+    
     return t
 
   def signPFunction(pDerivative):
     signP = pDerivative.expression("(b('PDerivative') > 0) ? 1" + ": (b('PDerivative') == 0) ? 0" + ": -1").rename("signP")
-
+    
     return signP
 
   def signQFunction(qDerivative):
     signQ = qDerivative.expression("(b('QDerivative') > 0) ? 1" + ": (b('QDerivative') == 0) ? 0" + ": -1").rename("signQ")
-
+    
     return signQ
 
   # Calculating the derivatives
@@ -320,14 +320,14 @@ def calculateAttributes(derivatives):
   def slopeFunction(derivatives):
     p = derivatives.select('PDerivative')
     q = derivatives.select('QDerivative')
-
+    
     p2 = p.pow(2).rename('A')
     q2 = q.pow(2).rename('A')
     p2q2 = ee.ImageCollection([p2,q2])
     sumP2q2 = p2q2.sum()
     sqrtSumP2q2 = sumP2q2.sqrt()
     slope = sqrtSumP2q2.atan().multiply(180).divide(math.pi).rename('Slope')
-
+    
     return slope
 
   def aspectFunction(derivatives):
@@ -339,13 +339,13 @@ def calculateAttributes(derivatives):
     constantNeg1 = ee.Image(ee.Number(-1))
     constant90 = ee.Image(ee.Number(90))
     constant180 = ee.Image(ee.Number(180))
-
+    
     p1 = constantNeg1.multiply(constant90).multiply(constant1.subtract(signQ)).multiply(constant1.subtract(signP.abs()))
     p2 = constant180.multiply(constant1.add(signP))
     p3 = constant180.divide(math.pi).multiply(signP)
     p4 = constantNeg1.multiply(q).divide(p.pow(2).add(q.pow(2)).sqrt()).acos()
     A = p1.add(p2).subtract(p3.multiply(p4)).rename('Aspect')
-
+    
     return A
 
   def hillshadeFunction(aspect):
@@ -354,26 +354,26 @@ def calculateAttributes(derivatives):
     theta = ee.Image(ee.Number(45)) # Azimuth
     psi = ee.Image(ee.Number(315)) # Elevation angle
     constant1 = ee.Image(ee.Number(1))
-
+    
     p1 = constant1.subtract(p.multiply(theta.sin()).multiply(constant1.divide(psi))).subtract(q.multiply(theta.cos()).multiply(constant1.divide(psi)))
     p2 = constant1.add(p.pow(2)).add(q.pow(2)).sqrt().multiply(constant1.add(theta.sin().multiply(constant1.divide(psi)).pow(2)).add(theta.cos().multiply(constant1.divide(psi)).pow(2)).sqrt())
     AH = p1.divide(p2).rename('Hillshade')
-
+    
     return AH
 
 
   def northernnessFunction(aspect):
     A = aspect.select('Aspect')
-
+    
     AN = A.multiply(math.pi).divide(180).cos().rename('Northness')
-
+    
     return AN
 
   def easternnessFunction(aspect):
     A = aspect.select('Aspect')
-
+    
     AE = A.multiply(math.pi).divide(180).sin().rename('Eastness')
-
+    
     return AE
 
   def horizontalCurvatureFunction(derivatives):
@@ -385,11 +385,11 @@ def calculateAttributes(derivatives):
     constantNeg1 = ee.Image(ee.Number(-1))
     constant1 = ee.Image(ee.Number(1))
     constant2 = ee.Image(ee.Number(2))
-
+    
     p1 = q.pow(2).multiply(r).subtract(constant2.multiply(p).multiply(q).multiply(s)).add(p.pow(2).multiply(t))
     p2 = p.pow(2).add(q.pow(2)).multiply(constant1.add(p.pow(2)).add(q.pow(2)).sqrt())
     kh = constantNeg1.multiply(p1.divide(p2)).rename('HorizontalCurvature')
-
+    
     return kh
 
   def verticalCurvatureFunction(derivatives):
@@ -405,7 +405,7 @@ def calculateAttributes(derivatives):
     p2 = p.pow(2).multiply(r).add(constant2.multiply(p).multiply(q).multiply(s)).add(q.pow(2).multiply(t))
     p3 = p.pow(2).add(q.pow(2)).multiply(constant1.add(p.pow(2)).add(q.pow(2)).pow(3).sqrt())
     kv = constantNeg1.multiply(p2.divide(p3)).rename('VerticalCurvature')
-
+    
     return kv
 
   def meanCurvatureFunction(derivatives):
@@ -421,7 +421,7 @@ def calculateAttributes(derivatives):
     p2 = constant1.add(q.pow(2)).multiply(r).subtract(constant2.multiply(p).multiply(q).multiply(s)).add(constant1.add(p.pow(2)).multiply(t))
     p3 = constant2.multiply(constant1.add(p.pow(2)).add(q.pow(2)).pow(3).sqrt())
     km = constantNeg1.multiply(p2.divide(p3)).rename('MeanCurvature')
-
+    
     return km
 
   def gaussianCurvatureFunction(derivatives):
@@ -431,18 +431,18 @@ def calculateAttributes(derivatives):
     s = derivatives.select('SDerivative')
     t = derivatives.select('TDerivative')
     constant1 = ee.Image(ee.Number(1))
-
+    
     p1 = r.multiply(t).subtract(s.pow(2))
     p2 = constant1.add(p.pow(2)).add(p.pow(2)).pow(2)
     kg = p1.divide(p2).rename('GaussianCurvature')
-
+    
     return kg
 
   def minimalCurvatureFunction(gaussian, mean):
     K = gaussian.select('GaussianCurvature')
     H = mean.select('MeanCurvature')
     kmin = H.subtract(H.pow(2).subtract(K).sqrt()).rename('MinimalCurvature')
-
+    
     return kmin
 
   def maximalCurvatureFunction(gaussian, mean):
@@ -455,9 +455,9 @@ def calculateAttributes(derivatives):
     K = gaussian.select('GaussianCurvature').rename('K')
     H = mean.select('MeanCurvature').rename('H')
     constant2 = ee.Image(ee.Number(2))
-
+    
     index = constant2.divide(math.pi).multiply(H.divide(H.pow(2).subtract(K).sqrt())).rename('ShapeIndex')
-
+    
     return index
 
   # Calculating the Attributes
@@ -498,14 +498,14 @@ def terrainAnalysis(dem: ee.Image, bbox: ee.Geometry | None = None) -> ee.Image:
   Calculate all terrain attributes for a given DEM and region.
 
     Parameters:
-      dem (ee.Image):
+      dem (ee.Image): 
         An image representing elevation values.
       bbox (ee.Geometry | None):
-        A geometry over which terrain attributes
+        A geometry over which terrain attributes 
         will be calculated.
 
     Returns:
-      attributes (ee.Image):
+      attributes (ee.Image): 
         An image with calculated terrain attributes
         with the following bands: Elevation, Slope, Aspect, Hillshade,
         Northness, Eastness, HorizontalCurvature, VerticalCurvature,
@@ -520,7 +520,7 @@ def terrainAnalysis(dem: ee.Image, bbox: ee.Geometry | None = None) -> ee.Image:
 
 # Additional features
 
-def makeVisualization(result: ee.Image, bandName: str,
+def makeVisualization(result: ee.Image, bandName: str, 
                       zoomLevel: str, bbox: ee.Geometry, palette: str) -> ee.Image:
   """
   Generate a visualization for a given band at a particular zoom level.
@@ -528,11 +528,11 @@ def makeVisualization(result: ee.Image, bandName: str,
   to display the image from a choice of palettes.
 
   Parameters:
-    result (ee.Image):
+    result (ee.Image): 
       Image to be visualized.
-    bandName (str):
+    bandName (str): 
       Band within result to be visualized.
-    zoomLevel (str):
+    zoomLevel (str): 
       Desired zoom level. Must be of form "levelX",
       where X is from 0-15, inclusive.
     bbox (ee.Geometry):
@@ -548,7 +548,7 @@ def makeVisualization(result: ee.Image, bandName: str,
       visualization.
 
   """
-
+  
   levelsDic = ee.Dictionary({
         'level0': {'zoom': 0, 'scale': 157000},
         'level1': {'zoom': 1, 'scale': 78000},
@@ -587,13 +587,13 @@ def makeVisualization(result: ee.Image, bandName: str,
     'elevation': 'b0f3be, e0fbb2, b8de76, 27a52a, 34883c, 9ca429, f8b004, c04a02, c04a02, 870800, 741805, 6c2a0a, 7d4a2b, 9c8170, b5b5b5, dad8da',
     'aspect': 'red, green, blue, yellow, red',    'hillshade': 'black, white'
   })
-
+  
   visualization = imageSelected.visualize({
     min: minMaxLegend.get('selection_perc5'),
     max: minMaxLegend.get('selection_perc95'),
     palette: palettes.get(palette)
   })
-
+  
   return visualization
 
 def logTransformation(result: ee.Image, bandName: str) -> ee.Image:
@@ -605,7 +605,7 @@ def logTransformation(result: ee.Image, bandName: str) -> ee.Image:
       Image to be transformed.
     bandName (str):
       Band in image to be transformed.
-
+  
   Returns:
     logValue (ee.Image):
       Log-transformed image.
@@ -615,5 +615,5 @@ def logTransformation(result: ee.Image, bandName: str) -> ee.Image:
   constant1 = ee.Image(ee.Number(1))
   constant10 = ee.Image(ee.Number(10))
   logValues = selection.abs().multiply(constant10.pow(4)).add(1).log10().multiply(sign).rename(bandName)
-
+  
   return logValues
