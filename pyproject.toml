@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tagee"
+version = "0.2.0"
+authors = [
+  { name="Jose Lucas", email="zecojls@gmail.com"},
+]
+description = "A suite of terrain analysis tools for Google Earth Engine."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+dependencies = [
+    "earthengine-api"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/zecojls/tagee"
+Issues = "https://github.com/zecojls/tagee/issues"
