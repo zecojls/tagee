@@ -74,7 +74,7 @@ var waterMask = hansen_2016.updateMask(hansen_2016_wbodies);
 
 // Loading SRTM 30 m
 
-var demSRTM = ee.Image('USGS/SRTMGL1_003').clip(bbox).rename('DEM');
+var demSRTM = ee.Image('USGS/SRTMGL1_003').rename('DEM');
 
 // Smoothing filter
 var gaussianFilter = ee.Kernel.gaussian({
@@ -86,7 +86,7 @@ var demSRTM = demSRTM.convolve(gaussianFilter).resample("bilinear");
 
 // Terrain analysis
 
-var DEMAttributes = TAGEE.terrainAnalysis(TAGEE, demSRTM, bbox).updateMask(waterMask);
+var DEMAttributes = TAGEE.terrainAnalysis(TAGEE, demSRTM).updateMask(waterMask);
 print(DEMAttributes.bandNames(), 'Parameters of Terrain');
 
 // Visualization
@@ -103,7 +103,7 @@ In the Javascript code editor [https://code.earthengine.google.com/](https://cod
 var TAGEE = require('users/zecojls/TAGEE:TAGEE-functions');
 ```
 
-Then, you need to define the bounding box (study region limits) and import the Digital Elevation Model for terrain analysis (e.g. SRTM 30 m).
+Then, you need to define the bounding box (study region limits) and import the Digital Elevation Model for terrain analysis (e.g. SRTM 30 m). Note that the bounding box is only necessary for generating a visualization.
 
 ```javascript
 // World bounding box
@@ -118,7 +118,7 @@ var waterMask = hansen_2016.updateMask(hansen_2016_wbodies);
 
 // Loading SRTM 30 m
 
-var demSRTM = ee.Image('USGS/SRTMGL1_003').clip(bbox).rename('DEM');
+var demSRTM = ee.Image('USGS/SRTMGL1_003').rename('DEM');
 
 // Smoothing filter
 var gaussianFilter = ee.Kernel.gaussian({
@@ -134,7 +134,7 @@ Finally, you can run the TAGEE module for calculating the terrain attributes.
 ```javascript
 // Terrain analysis
 
-var DEMAttributes = TAGEE.terrainAnalysis(TAGEE, demSRTM, bbox).updateMask(waterMask);
+var DEMAttributes = TAGEE.terrainAnalysis(TAGEE, demSRTM).updateMask(waterMask);
 print(DEMAttributes.bandNames(), 'Parameters of Terrain');
 ```
 Console output (don't copy):
@@ -212,10 +212,9 @@ gaussianFilter = ee.Kernel.gaussian(
 )
 srtmSmooth = ee.Image("USGS/SRTMGL1_003").convolve(gaussianFilter).resample("bilinear")
 
-# Calculate terrain metrics over a given geometry. You must provide a geometry
-# in the terrainAnalysis call.
+# Calculate terrain metrics over a given geometry.
 geom = ee.FeatureCollection(ee.Geometry.Rectangle(-111, 40, -110.9, 40.1))
-terrainMetrics = terrainAnalysis(srtmSmooth, geom.geometry())
+terrainMetrics = terrainAnalysis(srtmSmooth)
 
 # Summarize the metrics in the geometry
 reduction = terrainMetrics.reduceRegions(
