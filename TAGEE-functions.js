@@ -3,7 +3,7 @@
 // Functions for calculating parameters  //
 ///////////////////////////////////////////
 
-exports.calculateParameters = function(dem, bbox){
+exports.calculateParameters = function(dem){
 
 // Defining kernels to retrieve 3x3 window elevations
 
@@ -82,13 +82,13 @@ var haversineFunction = function(demLat, demLong, latNeigh1, latNeigh2, longNeig
   var p2 = φ1.cos().multiply(φ2.cos()); // cos(φ1) * cos(φ2)
   var p3 = Δλ.divide(2).sin().multiply(Δλ.divide(2).sin()); // sin(Δλ/2) * sin(Δλ/2)
   var j = p2.multiply(p3).add(p1); // j = p1 + p2 * p3
-  var p4 = ee.Image(ee.Number(1)).clip(bbox); // p4 = image with constant 1
-  var p5 = ee.Image(ee.Number(2)).clip(bbox); // p5 = image with constant 2
+  var p4 = ee.Image(ee.Number(1)); // p4 = image with constant 1
+  var p5 = ee.Image(ee.Number(2)); // p5 = image with constant 2
   var p6 = p4.subtract(j).sqrt(); // sqrt(1-j)
   var p7 = j.sqrt(); // sqrt(a)
   var p8 = p6.atan2(p7); // atan2(p6,p7)
   var k = p5.multiply(p8); // k = 2 * p8
-  var R = ee.Image(ee.Number(6371000)).clip(bbox); // approximate radius of Earth
+  var R = ee.Image(ee.Number(6371000)); // approximate radius of Earth
   var l = R.multiply(k); // l = R * k which is the distance between two points
   
   return l;
@@ -114,7 +114,7 @@ return demCalculations;
 // Functions for calculating terrain derivatives  //
 ////////////////////////////////////////////////////
 
-exports.calculateDerivatives = function(parameters, bbox){
+exports.calculateDerivatives = function(parameters){
 
 // Functions for Derivatives and Terrain Attributes
 
@@ -130,7 +130,7 @@ var addPDerivative = function(parameters) {
   var Z6 = parameters.select('Z6');
   var Z7 = parameters.select('Z7');
   var Z9 = parameters.select('Z9');
-  var constant2 = ee.Image(ee.Number(2)).clip(bbox);
+  var constant2 = ee.Image(ee.Number(2));
   
   var p1 = a.pow(2).multiply(c).multiply(d).multiply(d.add(e)).multiply(Z3.subtract(Z1));
   var p2 = b.multiply(a.pow(2).multiply(d.pow(2)).add(c.pow(2).multiply(e.pow(2)))).multiply(Z6.subtract(Z4));
@@ -162,9 +162,9 @@ var addQDerivative = function(parameters) {
   var Z7 = parameters.select('Z7');
   var Z8 = parameters.select('Z8');
   var Z9 = parameters.select('Z9');
-  var constant1 = ee.Image(ee.Number(1)).clip(bbox);
-  var constant2 = ee.Image(ee.Number(2)).clip(bbox);
-  var constant3 = ee.Image(ee.Number(3)).clip(bbox);
+  var constant1 = ee.Image(ee.Number(1));
+  var constant2 = ee.Image(ee.Number(2));
+  var constant3 = ee.Image(ee.Number(3));
   
   var p1 = constant1.divide(constant2.multiply(d).multiply(e).multiply(d.add(e)).multiply(a.pow(4).add(b.pow(4)).add(c.pow(4))));
   
@@ -204,7 +204,7 @@ var addRDerivative = function(parameters) {
   var Z7 = parameters.select('Z7');
   var Z8 = parameters.select('Z8');
   var Z9 = parameters.select('Z9');
-  var constant2 = ee.Image(ee.Number(2)).clip(bbox);
+  var constant2 = ee.Image(ee.Number(2));
   
   var p1 = c.pow(2).multiply(Z1.add(Z3).subtract(constant2.multiply(Z2)));
   var p2 = b.pow(2).multiply(Z4.add(Z6).subtract(constant2.multiply(Z5)));
@@ -231,7 +231,7 @@ var addSDerivative = function(parameters) {
   var Z7 = parameters.select('Z7');
   var Z8 = parameters.select('Z8');
   var Z9 = parameters.select('Z9');
-  var constant2 = ee.Image(ee.Number(2)).clip(bbox);
+  var constant2 = ee.Image(ee.Number(2));
   
   var p1 = c.multiply(a.pow(2).multiply(d.add(e)).add(b.pow(2).multiply(e))).multiply(Z3.subtract(Z1));
   var p2 = b.multiply(a.pow(2).multiply(d).subtract(c.pow(2).multiply(e))).multiply(Z4.subtract(Z6));
@@ -263,9 +263,9 @@ var addTDerivative = function(parameters) {
   var Z7 = parameters.select('Z7');
   var Z8 = parameters.select('Z8');
   var Z9 = parameters.select('Z9');
-  var constant1 = ee.Image(ee.Number(1)).clip(bbox);
-  var constant2 = ee.Image(ee.Number(2)).clip(bbox);
-  var constant3 = ee.Image(ee.Number(3)).clip(bbox);
+  var constant1 = ee.Image(ee.Number(1));
+  var constant2 = ee.Image(ee.Number(2));
+  var constant3 = ee.Image(ee.Number(3));
   
   var p1 = constant2.divide(constant3.multiply(d).multiply(e).multiply(d.add(e)).multiply(a.pow(4).add(b.pow(4)).add(c.pow(4))));
   
@@ -293,13 +293,13 @@ var addTDerivative = function(parameters) {
 };
 
 var signPFunction = function(pDerivative) {
-  var signP = pDerivative.expression("(b('PDerivative') > 0) ? 1" + ": (b('PDerivative') == 0) ? 0" + ": -1").clip(bbox).rename("signP");
+  var signP = pDerivative.expression("(b('PDerivative') > 0) ? 1" + ": (b('PDerivative') == 0) ? 0" + ": -1").rename("signP");
   
   return signP;
 };
 
 var signQFunction = function(qDerivative) {
-  var signQ = qDerivative.expression("(b('QDerivative') > 0) ? 1" + ": (b('QDerivative') == 0) ? 0" + ": -1").clip(bbox).rename("signQ");
+  var signQ = qDerivative.expression("(b('QDerivative') > 0) ? 1" + ": (b('QDerivative') == 0) ? 0" + ": -1").rename("signQ");
   
   return signQ;
 };
@@ -330,7 +330,7 @@ return demWithDerivatives;
 // Functions for calculating terrain attributes  //
 ///////////////////////////////////////////////////
 
-exports.calculateAttributes = function(derivatives, bbox){
+exports.calculateAttributes = function(derivatives){
 
 var slopeFunction = function(derivatives) {
   var p = derivatives.select('PDerivative');
@@ -351,10 +351,10 @@ var aspectFunction = function(derivatives) {
   var q = derivatives.select('QDerivative');
   var signP = derivatives.select('signP');
   var signQ = derivatives.select('signQ');
-  var constant1 = ee.Image(ee.Number(1)).clip(bbox);
-  var constantNeg1 = ee.Image(ee.Number(-1)).clip(bbox);
-  var constant90 = ee.Image(ee.Number(90)).clip(bbox);
-  var constant180 = ee.Image(ee.Number(180)).clip(bbox);
+  var constant1 = ee.Image(ee.Number(1));
+  var constantNeg1 = ee.Image(ee.Number(-1));
+  var constant90 = ee.Image(ee.Number(90));
+  var constant180 = ee.Image(ee.Number(180));
   
   var p1 = constantNeg1.multiply(constant90).multiply(constant1.subtract(signQ)).multiply(constant1.subtract(signP.abs()));
   var p2 = constant180.multiply(constant1.add(signP));
@@ -368,9 +368,9 @@ var aspectFunction = function(derivatives) {
 var hillshadeFunction = function(aspect) {
   var p = derivatives.select('PDerivative');
   var q = derivatives.select('QDerivative');
-  var θ = ee.Image(ee.Number(45)).clip(bbox); // Azimuth
-  var ψ = ee.Image(ee.Number(315)).clip(bbox); // Elevation angle
-  var constant1 = ee.Image(ee.Number(1)).clip(bbox);
+  var θ = ee.Image(ee.Number(45)); // Azimuth
+  var ψ = ee.Image(ee.Number(315)); // Elevation angle
+  var constant1 = ee.Image(ee.Number(1));
   
   var p1 = constant1.subtract(p.multiply(θ.sin()).multiply(constant1.divide(ψ))).subtract(q.multiply(θ.cos()).multiply(constant1.divide(ψ)));
   var p2 = constant1.add(p.pow(2)).add(q.pow(2)).sqrt().multiply(constant1.add(θ.sin().multiply(constant1.divide(ψ)).pow(2)).add(θ.cos().multiply(constant1.divide(ψ)).pow(2)).sqrt());
@@ -402,9 +402,9 @@ var horizontalCurvatureFunction = function(derivatives) {
   var r = derivatives.select('RDerivative');
   var s = derivatives.select('SDerivative');
   var t = derivatives.select('TDerivative');
-  var constantNeg1 = ee.Image(ee.Number(-1)).clip(bbox);
-  var constant1 = ee.Image(ee.Number(1)).clip(bbox);
-  var constant2 = ee.Image(ee.Number(2)).clip(bbox);
+  var constantNeg1 = ee.Image(ee.Number(-1));
+  var constant1 = ee.Image(ee.Number(1));
+  var constant2 = ee.Image(ee.Number(2));
   
   var p1 = q.pow(2).multiply(r).subtract(constant2.multiply(p).multiply(q).multiply(s)).add(p.pow(2).multiply(t));
   var p2 = p.pow(2).add(q.pow(2)).multiply(constant1.add(p.pow(2)).add(q.pow(2)).sqrt());
@@ -419,9 +419,9 @@ var verticalCurvatureFunction = function(derivatives) {
   var r = derivatives.select('RDerivative');
   var s = derivatives.select('SDerivative');
   var t = derivatives.select('TDerivative');
-  var constantNeg1 = ee.Image(ee.Number(-1)).clip(bbox);
-  var constant1 = ee.Image(ee.Number(1)).clip(bbox);
-  var constant2 = ee.Image(ee.Number(2)).clip(bbox);
+  var constantNeg1 = ee.Image(ee.Number(-1))
+  var constant1 = ee.Image(ee.Number(1));
+  var constant2 = ee.Image(ee.Number(2));
 
   var p2 = p.pow(2).multiply(r).add(constant2.multiply(p).multiply(q).multiply(s)).add(q.pow(2).multiply(t));
   var p3 = p.pow(2).add(q.pow(2)).multiply(constant1.add(p.pow(2)).add(q.pow(2)).pow(3).sqrt());
@@ -436,9 +436,9 @@ var meanCurvatureFunction = function(derivatives) {
   var r = derivatives.select('RDerivative');
   var s = derivatives.select('SDerivative');
   var t = derivatives.select('TDerivative');
-  var constantNeg1 = ee.Image(ee.Number(-1)).clip(bbox);
-  var constant1 = ee.Image(ee.Number(1)).clip(bbox);
-  var constant2 = ee.Image(ee.Number(2)).clip(bbox);
+  var constantNeg1 = ee.Image(ee.Number(-1));
+  var constant1 = ee.Image(ee.Number(1));
+  var constant2 = ee.Image(ee.Number(2));
 
   var p2 = constant1.add(q.pow(2)).multiply(r).subtract(constant2.multiply(p).multiply(q).multiply(s)).add(constant1.add(p.pow(2)).multiply(t));
   var p3 = constant2.multiply(constant1.add(p.pow(2)).add(q.pow(2)).pow(3).sqrt());
@@ -453,7 +453,7 @@ var gaussianCurvatureFunction = function(derivatives) {
   var r = derivatives.select('RDerivative');
   var s = derivatives.select('SDerivative');
   var t = derivatives.select('TDerivative');
-  var constant1 = ee.Image(ee.Number(1)).clip(bbox);
+  var constant1 = ee.Image(ee.Number(1));
   
   var p1 = r.multiply(t).subtract(s.pow(2));
   var p2 = constant1.add(p.pow(2)).add(p.pow(2)).pow(2);
@@ -520,10 +520,10 @@ return demWithAttributes.select('Elevation', 'Slope', 'Aspect', 'Hillshade', 'No
                                 'GaussianCurvature', 'MinimalCurvature', 'MaximalCurvature', 'ShapeIndex');
 };
 
-exports.terrainAnalysis = function(TAGEE, dem, bbox) {
-  var parameters = TAGEE.calculateParameters(dem, bbox);
-  var derivatives = TAGEE.calculateDerivatives(parameters, bbox);
-  var attributes = TAGEE.calculateAttributes(derivatives, bbox);
+exports.terrainAnalysis = function(TAGEE, dem) {
+  var parameters = TAGEE.calculateParameters(dem);
+  var derivatives = TAGEE.calculateDerivatives(parameters);
+  var attributes = TAGEE.calculateAttributes(derivatives);
   return(attributes);
 };
 
