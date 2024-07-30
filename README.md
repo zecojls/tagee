@@ -16,28 +16,26 @@ Or install the Python package from pip:
 pip install tagee
 ```
 
-Additional examples information are below.
-
 # Feature Overview
 Available terrain attributes:
 
 | Attribute            | Unit          | Description                                             |
 |----------------------|---------------|---------------------------------------------------------|
-| Elevation            | meter         | Height of terrain above sea level                       |
-| Slope                | degree        | Slope gradient                                          |
-| Aspect               | degree        | Compass direction                                       |
+| Elevation            | $m$           | Height of terrain above sea level                       |
+| Slope                | $°$           | Slope gradient, in degrees                              |
+| Aspect               | $°$           | Compass direction, in degrees                           |
 | Hillshade            | dimensionless | Brightness of the illuminated terrain                   |
 | Northness            | dimensionless | Degree of orientation to North                          |
 | Eastness             | dimensionless | Degree of orientation to East                           |
-| Horizontal curvature | meter         | Curvature tangent to the contour line                   |
-| Vertical curvature   | meter         | Curvature tangent to the slope line                     |
-| Mean curvature       | meter         | Half-sum of the two orthogonal curvatures               |
-| Minimal curvature    | meter         | Lowest value of curvature                               |
-| Maximal curvature    | meter         | Highest value of curvature                              |
-| Gaussian curvature   | meter         | Product of maximal and minimal curvatures               |
+| Horizontal curvature | $m^{-1}$      | Curvature tangent to the contour line                   |
+| Vertical curvature   | $m^{-1}$      | Curvature tangent to the slope line                     |
+| Mean curvature       | $m^{-1}$      | Half-sum of the two orthogonal curvatures               |
+| Minimal curvature    | $m^{-1}$      | Lowest value of curvature                               |
+| Maximal curvature    | $m^{-1}$      | Highest value of curvature                              |
+| Gaussian curvature   | $m^{-2}$      | Product of maximal and minimal curvatures               |
 | Shape Index          | dimensionless | Continuous form of the Gaussian landform classification |
 
-The users are referred to Florinsky (2016) for mathematical concepts of geomorphometry, a historical overview of the progress of digital terrain modelling, and the notion of the topographic surface and its limitations.
+The users are referred to Florinsky (2016) for mathematical concepts of geomorphometry, a historical overview of the progress of digital terrain modeling, and the notion of the topographic surface and its limitations.
 
 > Florinsky, Igor. Digital terrain analysis in soil science and geology. Academic Press, 2016.
 
@@ -47,14 +45,14 @@ Please, cite the following paper when using TAGEE:
 
 ## Important note!
 
-As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window to calculate partial derivatives and hence terrain attributes, the visualization of the outputs is affected by the scale, which require the adjustment of the histogram for proper visualization. This happens because GEE produces different pyramids from your data (from the local up to the global scale) and consequently the pixel size changes dynamically, affecting the range of the estimated attribute values. Until you specify your final resolution, say 30m/pixel, the pyramids will dynamically affect the visualization of an output for different visualizaiton scales. You can determine your final resolution by exporting the results to assets and importing back further processing or map composition.
+As TAGEE uses spheroidal geometries and elevation nodes from a 3x3 moving window to calculate partial derivatives and hence terrain attributes, the visualization of the outputs is affected by the scale, which requires the adjustment of the histogram for proper visualization. This happens because GEE produces different pyramids from your data (from the local up to the global scale) and consequently the pixel size changes dynamically, affecting the range of the estimated attribute values. Until you specify your final resolution, say 30m/pixel, the pyramids will dynamically affect the visualization of the output for different visualization scales. You can determine your final resolution by exporting the results to assets and importing back further processing or map composition.
 
 
 # Minimal reproducible example
 
 [OPEN THE EXAMPLE DIRECTLY IN THE GEE CODE EDITOR](https://code.earthengine.google.com/aa4e35435ceb259e86fe64eedd9cf53b).
 
-NOTE: Any Earth Engine user with the above link can use it to view and run the example code. However, you need to login.
+NOTE: Any Earth Engine user with the above link can use it to view and run the example code. However, you need to log in.
 
 ## Javascript
 ```javascript
