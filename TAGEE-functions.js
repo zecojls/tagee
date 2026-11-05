@@ -456,7 +456,7 @@ var gaussianCurvatureFunction = function(derivatives) {
   var constant1 = ee.Image(ee.Number(1));
   
   var p1 = r.multiply(t).subtract(s.pow(2));
-  var p2 = constant1.add(p.pow(2)).add(p.pow(2)).pow(2);
+  var p2 = constant1.add(p.pow(2)).add(q.pow(2)).pow(2);
   var kg = p1.divide(p2).rename('GaussianCurvature');
   
   return kg;
