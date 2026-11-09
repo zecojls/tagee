@@ -4,9 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tagee"
-version = "0.3.0"
+version = "0.4.0"
 authors = [
-  { name="Jose Lucas", email="zecojls@gmail.com"},
+  { name="Jose L. Safanelli", email="zecojls@gmail.com"},
+  { name="Keenan Ganz"},
+  { name="Do Ngoc Khanh"},
 ]
 description = "A suite of terrain analysis tools for Google Earth Engine."
 readme = "README.md"
